@@ -75,7 +75,15 @@ class DetailPageParser:
 
         for line in description_lines:
             if '습득/보관' in line:  # 서울서초경찰서에서는 [2023.01.02] [에어팟2세대 한쪽유닛(화이트(흰)색)]을 습득/보관 하였습니다.
-                name_and_color = re.findall(r'\[.*\].*\[(.*)\]', line)[0]  # 에어팟2세대 한쪽유닛(화이트(흰)색)
+                try:
+                    name_and_color = re.findall(r'\[.*\].*\[(.*)\]', line)[0]  # 에어팟2세대 한쪽유닛(화이트(흰)색)
+                except IndexError:
+                    name_and_color = re.findall(r"\[['\d.-/ 년]+[\d.-/ 월]+[\d.-/ 일]\][^\[]*(.*)습득/보관", line)[0]
+                    name_and_color = name_and_color.strip(' 을를[]')
+                if '색)' not in name_and_color:
+                    result[korean_key_to_english_key['물품명']] = name_and_color.strip()
+                    result[korean_key_to_english_key['물품색상']] = None
+                    continue
                 seperator = DetailPageParser._get_name_and_color_seperator_index(name_and_color)
                 result[korean_key_to_english_key['물품명']] = name_and_color[:seperator].strip()
                 result[korean_key_to_english_key['물품색상']] = name_and_color[seperator:].strip(' ()')

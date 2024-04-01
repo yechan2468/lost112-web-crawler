@@ -39,8 +39,6 @@ class DayCrawler:
         for i, item_id in enumerate(self._item_ids):
             self.logger.info(
                 f'    crawling item. date={self.date}, id={item_id} ({(i + 1) / len(self._item_ids) * 100:.1f}%, {i + 1}/{len(self._item_ids)})')
-            # if (i + 1) % 30 == 0:
-            #     time.sleep(15)  # to avoid ConnectionError 'Remote end closed connection without response'
 
             soup = SoupRequest.get_item_detail_page_soup(item_id)
 
